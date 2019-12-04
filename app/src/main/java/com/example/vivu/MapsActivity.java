@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.vivu.Remote.IGoogleApi;
+import com.example.vivu.repository.DBManager;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -96,7 +97,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
         mService=Common.getGoogleApi();
 
-
+        com.example.vivu.model.Marker marker1= new com.example.vivu.model.Marker(10.762984, 106.686797,"quan1",1);
+        com.example.vivu.model.Marker marker2= new com.example.vivu.model.Marker(10.763154, 106.677991,"quan5",0);
+        DBManager dbManager = new DBManager(this);
+        dbManager.addMarker(marker1);
+        dbManager.addMarker(marker2);
     }
 
 
@@ -111,7 +116,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setIndoorEnabled(false);
         mMap.setBuildingsEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
-
         addr = new LatLng(10.762934, 106.682338);
         mMap.addMarker(new MarkerOptions().position(addr).title("KHTN"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(addr,16));
@@ -337,6 +341,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
-
 
 }
