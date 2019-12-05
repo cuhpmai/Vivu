@@ -69,6 +69,7 @@ public class DBManager extends SQLiteOpenHelper {
                 listMarker.add(marker);
             } while (cursor.moveToNext());
         }
+        db.close();
         return listMarker;
     }
 }

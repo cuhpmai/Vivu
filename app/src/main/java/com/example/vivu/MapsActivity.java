@@ -96,12 +96,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         mService=Common.getGoogleApi();
-
-        com.example.vivu.model.Marker marker1= new com.example.vivu.model.Marker(10.762984, 106.686797,"quan1",1);
-        com.example.vivu.model.Marker marker2= new com.example.vivu.model.Marker(10.763154, 106.677991,"quan5",0);
-        DBManager dbManager = new DBManager(this);
-        dbManager.addMarker(marker1);
-        dbManager.addMarker(marker2);
     }
 
 
@@ -125,6 +119,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .bearing(30)
                 .tilt(45)
                 .build()));
+
+
+        //--------CREATE DEFAULT MARKER--------
+//        com.example.vivu.model.Marker marker1= new com.example.vivu.model.Marker(10.762984, 106.686797,"quan1",1);
+//        com.example.vivu.model.Marker marker2= new com.example.vivu.model.Marker(10.763154, 106.677991,"quan5",0);
+//        DBManager dbManager = new DBManager(this);
+//        dbManager.addMarker(marker1);
+//        dbManager.addMarker(marker2);
+//        com.example.vivu.model.Marker marker = new com.example.vivu.model.Marker(10.767222, 106.684348,"quan1",0);
+//        dbManager.addMarker(marker);
+
+        //--------ADD MARKERS TO MAPS---------
+        DBManager dbManager = new DBManager(this);
+        ArrayList<com.example.vivu.model.Marker> allMarker = (ArrayList<com.example.vivu.model.Marker>) dbManager.getAllMarker();
+        for (com.example.vivu.model.Marker marker:allMarker) {
+            LatLng latLng = new LatLng(marker.getmLat(),marker.getmLng());
+            mMap.addMarker(new MarkerOptions().position(latLng).title(marker.getmInfo()));
+            Log.d("create marker","successfully");
+        }
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
