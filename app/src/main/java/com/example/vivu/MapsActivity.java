@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,6 +54,7 @@ import retrofit2.Response;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "test";
     private GoogleMap mMap;
     SupportMapFragment mapFragment;
     private List<LatLng> polylineList;
@@ -71,6 +73,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ProgressDialog progressDialog;
     IGoogleApi mService;
     LatLng addr;
+    private String Tag= "Marker";
+    DBManager dbManager = new DBManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build()));
 
 
-        //--------CREATE DEFAULT MARKER--------
+////        --------CREATE DEFAULT MARKER--------
 //        com.example.vivu.model.Marker marker1= new com.example.vivu.model.Marker(10.762984, 106.686797,"quan1",1);
 //        com.example.vivu.model.Marker marker2= new com.example.vivu.model.Marker(10.763154, 106.677991,"quan5",0);
 //        DBManager dbManager = new DBManager(this);
@@ -131,7 +135,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        dbManager.addMarker(marker);
 
         //--------ADD MARKERS TO MAPS---------
-        DBManager dbManager = new DBManager(this);
         ArrayList<com.example.vivu.model.Marker> allMarker = (ArrayList<com.example.vivu.model.Marker>) dbManager.getAllMarker();
         for (com.example.vivu.model.Marker marker:allMarker) {
             LatLng latLng = new LatLng(marker.getmLat(),marker.getmLng());
@@ -139,12 +142,110 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d("create marker","successfully");
         }
 
+        LatLng latLng = new LatLng(10.762984, 106.686797);
+        mMap.addMarker(new MarkerOptions().position(latLng).title("test"));
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                double lat,ng;
+                lat = marker.getPosition().latitude;
+                lng = marker.getPosition().longitude;
+                destination= lat +","+lng;
+                Toast.makeText(MapsActivity.this, "abc" + destination, Toast.LENGTH_SHORT).show();
+                direction(destination);
+                return false;
+            }
+        });
+
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             return;
         }
         mMap.setMyLocationEnabled(true);
         MyLocation();
+        direction(destination);
+    }
+
+//    private float getBearing(LatLng startPos, LatLng newPos) {
+//        double lat=Math.abs(startPos.latitude-newPos.latitude);
+//        double lng=Math.abs(startPos.longitude-newPos.longitude);
+//
+//        if(startPos.latitude < newPos.latitude && startPos.longitude < newPos.longitude)
+//            return (float) (Math.toDegrees(Math.atan(lng/lat)));
+//        else if (startPos.latitude >= newPos.latitude && startPos.longitude < newPos.longitude)
+//            return (float) ((90-Math.toDegrees(Math.atan(lng/lat)))+90);
+//        else if (startPos.latitude >= newPos.latitude && startPos.longitude >= newPos.longitude)
+//            return (float) ((Math.toDegrees(Math.atan(lng/lat)))+180);
+//        else if (startPos.latitude < newPos.latitude && startPos.longitude >= newPos.longitude)
+//            return (float) ((90-Math.toDegrees(Math.atan(lng/lat)))+270);
+//        return -1;
+//    }
+
+    private List<LatLng> decodePoly(String encoded) {
+        List<LatLng> poly = new ArrayList<>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                    (((double) lng / 1E5)));
+            poly.add(p);
+        }
+
+        return poly;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void MyLocation() {
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        Location lastLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+        if (lastLocation != null)
+        {
+            LatLng latLng=new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 16));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(15)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            this.addr = latLng;
+        }
+
+    }
+
+    //------------DIRECTION TO THE DESTINATION-----------
+    private void direction(String destination) {
         String requestUrl=null;
         try{
             requestUrl="https://maps.googleapis.com/maps/api/directions/json?"+
@@ -158,7 +259,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
- //                           progressDialog.dismiss();
+                            //                           progressDialog.dismiss();
                             try {
 
                                 JSONObject jsonObject=new JSONObject(response.body().toString());
@@ -278,81 +379,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
-
-//    private float getBearing(LatLng startPos, LatLng newPos) {
-//        double lat=Math.abs(startPos.latitude-newPos.latitude);
-//        double lng=Math.abs(startPos.longitude-newPos.longitude);
-//
-//        if(startPos.latitude < newPos.latitude && startPos.longitude < newPos.longitude)
-//            return (float) (Math.toDegrees(Math.atan(lng/lat)));
-//        else if (startPos.latitude >= newPos.latitude && startPos.longitude < newPos.longitude)
-//            return (float) ((90-Math.toDegrees(Math.atan(lng/lat)))+90);
-//        else if (startPos.latitude >= newPos.latitude && startPos.longitude >= newPos.longitude)
-//            return (float) ((Math.toDegrees(Math.atan(lng/lat)))+180);
-//        else if (startPos.latitude < newPos.latitude && startPos.longitude >= newPos.longitude)
-//            return (float) ((90-Math.toDegrees(Math.atan(lng/lat)))+270);
-//        return -1;
-//    }
-
-    private List<LatLng> decodePoly(String encoded) {
-        List<LatLng> poly = new ArrayList<>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            LatLng p = new LatLng((((double) lat / 1E5)),
-                    (((double) lng / 1E5)));
-            poly.add(p);
-        }
-
-        return poly;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void MyLocation() {
-
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-        Location lastLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-        if (lastLocation != null)
-        {
-            LatLng latLng=new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 16));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(15)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-
-    }
-
 }
