@@ -57,7 +57,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String TAG = "test";
     private GoogleMap mMap;
     SupportMapFragment mapFragment;
-    private List<LatLng> polylineList;
     private Marker marker;
     private float v;
     private double lat,lng;
@@ -68,6 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText edtPlace;
     private String destination;
     private PolylineOptions polylineOptions, bluePolylineOptions;
+    private List<LatLng> polylineList;
     private Polyline bluePoly, cyanPoly;
     private LatLng myLocation;
     private ProgressDialog progressDialog;
@@ -75,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng addr;
     private String Tag= "Marker";
     DBManager dbManager = new DBManager(this);
+    ArrayList<com.example.vivu.model.Marker> allMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,10 +117,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
         addr = new LatLng(10.762934, 106.682338);
         mMap.addMarker(new MarkerOptions().position(addr).title("KHTN"));
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
+        //--------ADD MARKERS TO MAPS---------
+        addDefaultMarkers();
+
         mMap.setMyLocationEnabled(true);
 //        MyLocation();
 //        addr= new LatLng(mMap.getMyLocation().getLatitude(),mMap.getMyLocation().getLongitude()) ;
@@ -143,15 +148,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .tilt(45)
                 .build()));
 
-        //--------ADD MARKERS TO MAPS---------
-        ArrayList<com.example.vivu.model.Marker> allMarker = (ArrayList<com.example.vivu.model.Marker>) dbManager.getAllMarker();
-//        allMarker.addAll(dftMarkers);
-        for (com.example.vivu.model.Marker marker:allMarker) {
-            LatLng latLng = new LatLng(marker.getmLat(),marker.getmLng());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(marker.getmInfo()));
-            Log.d("create marker","successfully");
-        }
-
 //        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 //            @Override
 //            public void onMapClick(LatLng point) {
@@ -168,7 +164,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 lat = marker.getPosition().latitude;
                 lng = marker.getPosition().longitude;
                 destination= lat +","+lng;
-                Toast.makeText(MapsActivity.this, "abc" + destination, Toast.LENGTH_SHORT).show();
+                mMap.clear();
+                addDefaultMarkers();
+                Toast.makeText(MapsActivity.this, "remove lolyline", Toast.LENGTH_SHORT).show();
                 direction(destination);
                 return false;
             }
@@ -387,5 +385,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
 
+    }
+
+    //--------ADDING MARKERS TO MAPS FUNCTION---------
+
+    public void addDefaultMarkers() {
+        allMarker = (ArrayList<com.example.vivu.model.Marker>) dbManager.getAllMarker();
+        for (com.example.vivu.model.Marker marker : allMarker) {
+            LatLng latLng = new LatLng(marker.getmLat(), marker.getmLng());
+            mMap.addMarker(new MarkerOptions().position(latLng).title(marker.getmInfo()));
+            Log.d("create marker", "successfully");
+        }
     }
 }
