@@ -116,6 +116,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
         addr = new LatLng(10.762934, 106.682338);
         mMap.addMarker(new MarkerOptions().position(addr).title("KHTN"));
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+//        MyLocation();
+//        addr= new LatLng(mMap.getMyLocation().getLatitude(),mMap.getMyLocation().getLongitude()) ;
+
+        //---------SET MY LOCATION----------
+        if (mMap != null) {
+            mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                @Override
+                public void onMyLocationChange(Location arg0) {
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(arg0.getLatitude(), arg0.getLongitude())).title("It's Me!"));
+                    addr = new LatLng(arg0.getLatitude(), arg0.getLongitude());
+                }
+            });
+        }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(addr,16));
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
                 .target(googleMap.getCameraPosition().target)
@@ -124,30 +143,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .tilt(45)
                 .build()));
 
-
-////        --------CREATE DEFAULT MARKER--------
-//        com.example.vivu.model.Marker marker1= new com.example.vivu.model.Marker(10.762984, 106.686797,"quan1",1);
-//        com.example.vivu.model.Marker marker2= new com.example.vivu.model.Marker(10.763154, 106.677991,"quan5",0);
-//        DBManager dbManager = new DBManager(this);
-//        dbManager.addMarker(marker1);
-//        dbManager.addMarker(marker2);
-//        com.example.vivu.model.Marker marker = new com.example.vivu.model.Marker(10.767222, 106.684348,"quan1",0);
-//        dbManager.addMarker(marker);
-
         //--------ADD MARKERS TO MAPS---------
         ArrayList<com.example.vivu.model.Marker> allMarker = (ArrayList<com.example.vivu.model.Marker>) dbManager.getAllMarker();
+//        allMarker.addAll(dftMarkers);
         for (com.example.vivu.model.Marker marker:allMarker) {
             LatLng latLng = new LatLng(marker.getmLat(),marker.getmLng());
             mMap.addMarker(new MarkerOptions().position(latLng).title(marker.getmInfo()));
             Log.d("create marker","successfully");
         }
 
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(LatLng point) {
+//                marker.setPosition(point);
+//                mMap.animateCamera(CameraUpdateFactory.newLatLng(point));
+//            }
+//        });
         LatLng latLng = new LatLng(10.762984, 106.686797);
         mMap.addMarker(new MarkerOptions().position(latLng).title("test"));
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                double lat,ng;
+                double lat,lng;
                 lat = marker.getPosition().latitude;
                 lng = marker.getPosition().longitude;
                 destination= lat +","+lng;
@@ -156,14 +173,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return false;
             }
         });
-
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
-        MyLocation();
-        direction(destination);
     }
 
 //    private float getBearing(LatLng startPos, LatLng newPos) {
