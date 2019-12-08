@@ -221,35 +221,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return poly;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void MyLocation() {
-
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-        Location lastLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-        if (lastLocation != null)
-        {
-            LatLng latLng=new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 16));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(15)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-            this.addr = latLng;
-        }
-
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    private void MyLocation() {
+//
+//        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+//        Criteria criteria = new Criteria();
+//
+//        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            return;
+//        }
+//        Location lastLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+//        if (lastLocation != null)
+//        {
+//            LatLng latLng=new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+//                    new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 16));
+//
+//            CameraPosition cameraPosition = new CameraPosition.Builder()
+//                    .target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))      // Sets the center of the map to location user
+//                    .zoom(15)                   // Sets the zoom
+//                    .bearing(90)                // Sets the orientation of the camera to east
+//                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+//                    .build();                   // Creates a CameraPosition from the builder
+//            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//
+//            this.addr = latLng;
+//        }
+//
+//    }
 
     //------------DIRECTION TO THE DESTINATION-----------
     private void direction(String destination) {
