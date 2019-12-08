@@ -36,6 +36,23 @@ public class DBManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(query);
+
+        //        --------DEFAULT MARKER--------
+        ArrayList<com.example.vivu.model.Marker> dftMarkers = new ArrayList<com.example.vivu.model.Marker>();
+        dftMarkers.add( new com.example.vivu.model.Marker(10.762984, 106.686797,"quan1",1));
+        dftMarkers.add( new com.example.vivu.model.Marker(10.763154, 106.677991,"quan5",0));
+        dftMarkers.add( new com.example.vivu.model.Marker(10.767222, 106.684348,"quan1",0));
+        for (Marker marker:dftMarkers) {
+            ContentValues values = new ContentValues();
+            values.put(lat, marker.getmLat());
+            values.put(lng, marker.getmLng());
+            values.put(info, marker.getmInfo());
+            values.put(liked, marker.getmLiked());
+            db.insert(tableName, null, values);
+        }
+//        addMarker(new Marker(10.762984, 106.686797,"quan1",1));
+//        addMarker(new Marker(10.763154, 106.677991,"quan5",0));
+//        addMarker(new Marker(10.767222, 106.684348,"quan1",0));
     }
 
     @Override
@@ -51,7 +68,7 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(liked,marker.getmLiked());
         db.insert(tableName,null,values);
         db.close();
-        Log.d(TAG, "addMarker: successfully");
+        Log.e(TAG, "addMarker: successfully");
     }
     public List<Marker> getAllMarker(){
         List<Marker> listMarker = new ArrayList<>();
@@ -69,6 +86,7 @@ public class DBManager extends SQLiteOpenHelper {
                 listMarker.add(marker);
             } while (cursor.moveToNext());
         }
+        db.close();
         return listMarker;
     }
 }
