@@ -95,8 +95,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
 //                progressDialog = ProgressDialog.show(MapsActivity.this,
 //                        "Đang tìm đường đi..!","", true);
+                mMap.clear();
+                addDefaultMarkers();
                 destination=edtPlace.getText().toString();
                 destination=destination.replace(" ","+");
+                direction(destination);
                 mapFragment.getMapAsync(MapsActivity.this);
             }
         });
@@ -116,7 +119,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setBuildingsEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         addr = new LatLng(10.762934, 106.682338);
-        mMap.addMarker(new MarkerOptions().position(addr).title("KHTN"));
+//        mMap.addMarker(new MarkerOptions().position(addr).title("KHTN"));
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;

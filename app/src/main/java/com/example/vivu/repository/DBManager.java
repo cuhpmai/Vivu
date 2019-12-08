@@ -42,6 +42,7 @@ public class DBManager extends SQLiteOpenHelper {
         dftMarkers.add( new com.example.vivu.model.Marker(10.762984, 106.686797,"quan1",1));
         dftMarkers.add( new com.example.vivu.model.Marker(10.763154, 106.677991,"quan5",0));
         dftMarkers.add( new com.example.vivu.model.Marker(10.767222, 106.684348,"quan1",0));
+
         for (Marker marker:dftMarkers) {
             ContentValues values = new ContentValues();
             values.put(lat, marker.getmLat());
