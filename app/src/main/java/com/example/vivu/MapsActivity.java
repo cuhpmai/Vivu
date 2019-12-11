@@ -164,6 +164,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 double lat,lng;
+                com.example.vivu.model.Marker custommarker = new com.example.vivu.model.Marker();
+                custommarker = dbManager.getMarker(marker.getPosition());
+                Toast.makeText(MapsActivity.this, custommarker.getmInfo()+"", Toast.LENGTH_SHORT).show();
                 lat = marker.getPosition().latitude;
                 lng = marker.getPosition().longitude;
                 destination= lat +","+lng;

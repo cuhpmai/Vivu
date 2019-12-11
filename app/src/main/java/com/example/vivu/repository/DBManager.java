@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.vivu.model.Marker;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +29,12 @@ public class DBManager extends SQLiteOpenHelper {
             + lng + " REAL, "
             + info + " TEXT, "
             +liked + " integer)";
-
     private static final String TAG= "DBManager";
+    private Context context;
 
     public DBManager(Context context){
         super(context,dataBaseName,null,verson);
+        this.context = context;
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -42,7 +45,6 @@ public class DBManager extends SQLiteOpenHelper {
         dftMarkers.add( new com.example.vivu.model.Marker(10.762984, 106.686797,"quan1",1));
         dftMarkers.add( new com.example.vivu.model.Marker(10.763154, 106.677991,"quan5",0));
         dftMarkers.add( new com.example.vivu.model.Marker(10.767222, 106.684348,"quan1",0));
-
         for (Marker marker:dftMarkers) {
             ContentValues values = new ContentValues();
             values.put(lat, marker.getmLat());
@@ -59,7 +61,9 @@ public class DBManager extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + tableName);
+        onCreate(db);
     }
+
     public void addMarker(Marker marker){
         SQLiteDatabase db= this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -71,6 +75,7 @@ public class DBManager extends SQLiteOpenHelper {
         db.close();
         Log.e(TAG, "addMarker: successfully");
     }
+
     public List<Marker> getAllMarker(){
         List<Marker> listMarker = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + tableName;
@@ -87,7 +92,30 @@ public class DBManager extends SQLiteOpenHelper {
                 listMarker.add(marker);
             } while (cursor.moveToNext());
         }
-        db.close();
+//        db.close();
         return listMarker;
+    }
+
+    public void deleteAllMarkers(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(tableName,null,null);
+    }
+
+    public Marker getMarker(LatLng latLng) {
+        double lat = latLng.latitude;
+        double lng = latLng.longitude;
+        String whereClause = "latitude =? AND longitude = ?";
+        String[] whereArgs = new String[] {String.valueOf(lat),String.valueOf(lng)};
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(tableName, null, whereClause ,whereArgs , null, null, null);
+        if (cursor!= null)
+            cursor.moveToFirst();
+        Marker marker = new Marker();
+        marker.setmID(cursor.getInt(0));
+        marker.setmLat(cursor.getDouble(1));
+        marker.setmLng(cursor.getDouble(2));
+        marker.setmInfo(cursor.getString(3));
+        marker.setmLiked(cursor.getInt(4));
+        return marker;
     }
 }
