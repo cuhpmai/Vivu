@@ -1,44 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
     <fragment
         android:id="@+id/map"
-        android:layout_below="@+id/layout_panel"
+        android:layout_below="@+id/layout_panel2"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MapsActivity" />
-        <LinearLayout
-            android:id="@+id/layout_panel"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_panel"
+        android:id="@+id/layout_panel2">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#BBFFAF"
-            >
-            <EditText
-                android:id="@+id/edtPlace"
-                android:hint="  Nhập địa điểm"
-                android:layout_margin="10dp"
-                android:background="#FFF"
-                android:layout_weight="5"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"/>
-            <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/btnSearch"
-                android:background="@drawable/iconsearch"/>
+            android:text="Kiểu bản đồ:"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:textColor="#000"
+            android:textStyle="bold"/>
 
-        </LinearLayout>
+        <Spinner
+            android:id="@+id/spinner_map_type"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" />
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_distance"/>
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="0 km"
+            android:id="@+id/tvDistance" />
+        <ImageView
+            android:layout_marginLeft="5dp"
+
+            android:layout_gravity="center_vertical"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_clock"/>
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 min"
+            android:id="@+id/tvDuration" />
 
 
-    </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_panel"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#02FF46"
+        >
+        <EditText
+            android:id="@+id/edtPlace"
+            android:hint="  Nhập địa điểm"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_search"
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+
+        <!--            <fragment-->
+        <!--                android:id="@+id/place_autocomplete_fragment"-->
+        <!--                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"-->
+        <!--                android:layout_marginBottom="10dp"-->
+        <!--                            android:layout_marginLeft="10dp"-->
+        <!--                            android:layout_marginTop="10dp"-->
+        <!--                android:layout_weight="5"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="50dp"-->
+        <!--                />-->
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/btnSearch"
+            android:background="@drawable/iconsearch"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
 

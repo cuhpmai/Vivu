@@ -2,4 +2,9 @@
     <string name="app_name">Vivu</string>
     <string name="title_activity_maps">Vivu</string>
     <string name="google_direction_key">AIzaSyD9EagKsWiKToCHCpLGsoEUJ1zEPDEp3Fs</string>
+    <string-array name="maps_type">
+
+        <item > Thường</item>
+        <item > Vệ tinh</item>
+    </string-array>
 </resources>

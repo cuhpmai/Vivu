@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:padding="20dp"
+    android:background="#FFF">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textSize="20sp"
+        android:textColor="#000"
+        android:id="@+id/ten"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@+id/ten"
+        android:textSize="20sp"
+        android:textColor="#000"
+        android:id="@+id/diaChi"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/diaChi"
+        android:layout_marginTop="50dp"
+        android:id="@+id/btnTim"
+        android:layout_marginRight="30dp"
+        android:textColor="#FFF"
+        android:background="@drawable/dialog"
+        android:layout_marginLeft="30dp"
+        android:text="Chỉ đường tới đây"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnTim"
+        android:layout_marginTop="10dp"
+        android:id="@+id/btnHuy"
+        android:layout_marginRight="30dp"
+        android:textColor="#FFF"
+        android:background="@drawable/dialog"
+        android:layout_marginLeft="30dp"
+        android:text="Trở lại"/>
+
+</RelativeLayout>

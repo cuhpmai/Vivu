@@ -1,13 +1,11 @@
 package com.example.vivu.model;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class Marker {
     private int mID;
     private double mLat;
     private double mLng;
     private String mInfo;
-    private int mLiked;
+    private String mAddr;
 
     public int getmID() {
         return mID;
@@ -41,29 +39,32 @@ public class Marker {
         this.mInfo = mInfo;
     }
 
-    public int getmLiked() {
-        return mLiked;
+    public String getmAddr() {
+        return mAddr;
     }
 
-    public void setmLiked(int mLiked) {
-        this.mLiked = mLiked;
+    public void setmAddr(String mAddr) {
+        this.mAddr = mAddr;
     }
 
     public Marker() {
     }
 
-    public Marker(double mLat, double mLng, String mInfo, int mLiked) {
+    public Marker(double mLat, double mLng, String mInfo, String mAddr) {
         this.mLat = mLat;
         this.mLng = mLng;
         this.mInfo = mInfo;
-        this.mLiked = mLiked;
+        this.mAddr = mAddr;
     }
 
-    public Marker(int mID, double mLat, double mLng, String mInfo, int mLiked) {
+    public Marker(int mID, double mLat, double mLng, String mInfo, String mAddr) {
         this.mID = mID;
         this.mLat = mLat;
         this.mLng = mLng;
         this.mInfo = mInfo;
-        this.mLiked = mLiked;
+        this.mAddr = mAddr;
     }
+
+
+
 }
